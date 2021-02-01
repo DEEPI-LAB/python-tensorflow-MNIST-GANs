@@ -1,27 +1,25 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Dec 29 15:18:47 2020
-
 @author: pod LAB. Kim Jongwon
 """
 
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-
+from pytictoc import TicToc
 from scipy import io
+
 
 # fashion_mnist = tf.keras.datasets.fashion_mnist
 # (train_images,_),(_, _) = fashion_mnist.load_data()
 # mnist_x  = (train_images.astype('float32') - 127.5) /127.5
-# mnist_x = np.reshape((train_images-127.5)/127.5,(60000,28,28)).T
-
 mnist_x = io.loadmat('train_input.mat')['images']
 minst_y = io.loadmat('train_output.mat')['y']
 mnist_x = mnist_x.astype('float32')
 mnist_x = np.reshape((mnist_x*2-1) ,(28,28,60000)).T
 
-batch = 50
+batch = 10
 # Generator Net
 Generator = tf.keras.Sequential([
     tf.keras.layers.Input(100,None),
@@ -87,8 +85,10 @@ def train_step(inputs):
         
    
 total_batch = int(60000/batch) 
-        
-for epoch in tf.range(15):
+
+t = TicToc()   
+t.tic()  
+for epoch in tf.range(1):
     k = 0
     for i in tf.range(total_batch):
         batch_input = mnist_x[i*batch:(i+1)*batch].T
@@ -98,13 +98,14 @@ for epoch in tf.range(15):
         print(k)
         k = k + 1
 
-        if k%100 == 0:
-            G = Generator(get_noise(10,100))
+        # if k%100 == 0:
+        #     G = Generator(get_noise(10,100))
         
-            fig, ax = plt.subplots(1,10 ,figsize=(10, 1))
+        #     fig, ax = plt.subplots(1,10 ,figsize=(10, 1))
                 
-            for j in range(10):
-                ax[j].set_axis_off()
-                ax[j].imshow(G[j],cmap='gray')
-            plt.pause(0.001)
-            plt.show()
+        #     for j in range(10):
+        #         ax[j].set_axis_off()
+        #         ax[j].imshow(G[j],cmap='gray')
+        #     plt.pause(0.001)
+        #     plt.show()
+t.toc()
